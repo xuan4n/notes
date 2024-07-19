@@ -18,13 +18,11 @@
                 }
 
                 .note {
-                        border: none;
+                        margin: 0;
                         padding: 0.5rem;
-                        font-size: inherit;
                         overflow: auto;
                         flex: 1 1 60ch;
                         border: 1px solid gray;
-                        resize: none;
                 }
 
                 .note:focus {
@@ -55,7 +53,7 @@
 
                 async function saveHTML() {
                         const newHandle = await window.showSaveFilePicker({
-                                suggestedName: "notes.html",
+                                suggestedName: "index.html",
                         });
                         const writableStream = await newHandle.createWritable();
                         await writableStream.write(getHTML());
@@ -63,7 +61,8 @@
                 }
 
                 function createNote() {
-                        let note = document.createElement("textarea");
+                        let note = document.createElement("pre");
+                        note.setAttribute("contenteditable", "plaintext-only")
                         note.classList.add("note");
                         document.body.appendChild(note);
                         note.focus();
@@ -76,7 +75,7 @@
                 function insertDateTime(note) {
                         let start = note.selectionStart;
                         let end = note.selectionEnd;
-                        note.value = note.value.slice(0, start) + getDateTime() + note.value.slice(end, note.value.length);
+                        note.value = note.value.slice(0, start) + getDateTime() + " " + note.value.slice(end, note.value.length);
                         note.setSelectionRange(start + dateTimeLength + 1, start + dateTimeLength + 1);
                 }
 
@@ -109,22 +108,19 @@
         </script>
 </head>
 <body>
-<textarea class="note">
-Note v0.1
-2407191526
-</textarea>
-<textarea class="note">
-F1 to create
+        <pre contenteditable="plaintext-only" class="note">Note v0.1
+2407191526</pre>
+        <pre contenteditable="plaintext-only" class="note">F1 to create
 F2 to insert date time
 F3 to delete
-F4 to save
-</textarea>
-<textarea class="note">
-TO DO
+F4 to save</pre>
+        <pre contenteditable="plaintext-only" class="note">TO DO
 
 Note background color
+Ctrl S override
+Ctrl Shift z Redo
 
 * DONE
-</textarea>
+</pre>
 </body>
 </html>
