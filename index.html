@@ -1,0 +1,121 @@
+<html>
+<head>
+        <style>
+                * {
+                        box-sizing: border-box;
+                }
+
+                html {
+                        font-size: 16px;
+                        font-family: Consolas, monospace;
+                }
+
+                body {
+                        display: flex;
+                        gap: 0.5rem;
+                        padding: 0.5rem;
+                        margin: 0 auto;
+                        flex-wrap: wrap;
+                }
+
+                .note {
+                        border: none;
+                        padding: 0.5rem;
+                        font-size: inherit;
+                        overflow: auto;
+                        flex: 1 1 80ch;
+                        border: 1px solid gray;
+                        resize: none;
+                }
+
+                .note:focus {
+                        border: 1px solid black;
+                }
+
+                button {
+                        font-size: inherit;
+                        font-family: inherit;
+                }
+        </style>
+        <script>
+                const dateTimeLength = 10;
+
+                function getHTML() {
+                        return document.documentElement.outerHTML;
+                }
+
+                function getDateTime() {
+                        let dateTime = new Date();
+                        return dateTime.toISOString().slice(2, 16).replaceAll(/\D/g, "") - dateTime.getTimezoneOffset() / 60 * 100;
+                }
+
+                function getActiveNote() {
+                        let activeElement = document.activeElement;
+                        return activeElement.classList.contains("note") ? activeElement : null;
+                }
+
+                async function saveHTML() {
+                        const newHandle = await window.showSaveFilePicker({
+                                suggestedName: "notes.html",
+                        });
+                        const writableStream = await newHandle.createWritable();
+                        await writableStream.write(getHTML());
+                        await writableStream.close();
+                }
+
+                function createNote() {
+                        let note = document.createElement("textarea");
+                        note.classList.add("note");
+                        document.body.appendChild(note);
+                        note.focus();
+                }
+
+                function deleteNote(note) {
+                        note.remove();
+                }
+
+                function insertDateTime(note) {
+                        let start = note.selectionStart;
+                        let end = note.selectionEnd;
+                        note.value = note.value.slice(0, start) + getDateTime() + " " + note.value.slice(end, note.value.length);
+                        note.setSelectionRange(start + dateTimeLength + 1, start + dateTimeLength + 1);
+                }
+
+                document.addEventListener("keydown", function (event) {
+                        let activeNote = getActiveNote();
+                        switch (event.key) {
+                                case "F1":
+                                        event.preventDefault();
+                                        createNote();
+                                        break;
+                                case "F2":
+                                        event.preventDefault();
+                                        if (activeNote) {
+                                                insertDateTime(activeNote);
+                                        }
+                                        break;
+                                case "F3":
+                                        event.preventDefault();
+                                        if (activeNote) {
+                                                deleteNote(activeNote);
+                                        }
+                                        break;
+                                case "F4":
+                                        event.preventDefault();
+                                        saveHTML();
+                                        break;
+                        }
+                })
+
+        </script>
+</head>
+<body>
+<textarea class="note">
+v0.1
+F1 to create
+F2 to insert date time
+F3 to delete
+F4 to save
+</textarea>
+</body>
+</html>
