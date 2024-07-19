@@ -15,10 +15,7 @@
                         margin: 0;
                         display: flex;
                         flex-wrap: wrap;
-                        justify-content: stretch;
-                        align-content: stretch;
-                        align-items: stretch;
-                        height: 100vh;
+                        min-height: 100vh;
                 }
 
                 textarea {
@@ -70,8 +67,7 @@
                 }
 
                 function createNote() {
-                        let note = document.createElement("pre");
-                        note.setAttribute("contenteditable", "true")
+                        let note = document.createElement("textarea");
                         note.classList.add("note");
                         document.body.appendChild(note);
                         note.focus();
@@ -119,7 +115,7 @@
 <body>
 <textarea class="note">
 Note v0.1
-2407191641
+2407191703
 </textarea>
 <textarea class="note">
 F1 to create
